@@ -4,13 +4,13 @@
 import torch
 import numpy as np
 
-from models import RPool_Face_QVGA_monochrome as module
+from models import RPool_Face_M4 as module
 
-save_dir = '../../../../tools/SeeDot/model/rnnpool/face-2/'
+save_dir = '../../../../tools/SeeDot/model/rnnpool/face-4/'
 
 net = module.build_s3fd('test', num_classes = 2)
 
-checkpoint_dict = torch.load('./weights/RPool_Face_QVGA_monochrome_best_state.pth')
+checkpoint_dict = torch.load('./weights/RPool_Face_M4_best_state.pth')
 
 model_dict = {}
 net = torch.nn.DataParallel(net)
@@ -20,8 +20,9 @@ model_dict.update(checkpoint_dict)
 net.load_state_dict(model_dict, strict = False)
 net.eval()
 
-a = np.load('traces_rnnpool_face_qvga_monochrome/trace_inputs.npy')
-b = np.load('traces_rnnpool_face_qvga_monochrome/trace_outputs.npy')
+a = np.load('traces_rnnpool_face_m4/trace_inputs.npy')
+a = np.squeeze(a, axis = 1)
+b = np.load('traces_rnnpool_face_m4/trace_outputs.npy')
 inputs = torch.tensor(a)
 output = torch.tensor(net(inputs))
 
@@ -74,7 +75,7 @@ np.save(save_dir + 'Bh2.npy', Bh2m.detach().numpy())
 np.save(save_dir + 'zeta2.npy', zeta2.detach().numpy().item())
 np.save(save_dir + 'nu2.npy', nu2.detach().numpy().item())
 
-for j in range(14):
+for j in range(4):
 	F1 = net.state_dict()['module.mob.%d.conv.0.0.weight' % j]
 	shaper = F1.shape
 	F1m = F1.reshape(1, shaper[0], shaper[1], 1, 1).permute(0, 3, 4, 2, 1)
