@@ -81,6 +81,7 @@ class ProtoNN(nn.Module):
         L = self.__L
         return d, dcap, m, L, self.gamma
 
+    # I am getting a different projection matrix, W from C++ one... Numpy Initialization is not null so might be the case.
     def getModelMatrices(self):
         '''
         Returns model matrices, which can then be evaluated to obtain
@@ -91,6 +92,10 @@ class ProtoNN(nn.Module):
             [ProjectionMatrix (W), prototypeMatrix (B),
              prototypeLabelsMatrix (Z), gamma]
         '''
+        '''
+        Not null of W, Ref #13 / Discarding Initial value of last stored in W
+        '''
+        self.W=[-1::0]
         return self.W, self.B, self.Z, self.gamma
 
     def forward(self, X):
